@@ -34,6 +34,13 @@ public class CreateList extends AppCompatActivity {
     // declare a Calendar
     Calendar calendar;
 
+    // declare database handler
+    DBHandler dbHandler;
+
+    /**
+     * Initializes the action bar and the view
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +85,9 @@ public class CreateList extends AppCompatActivity {
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        // initialize database handler
+        dbHandler = new DBHandler(this, null);
     }
 
     public void updateDueDate() {
@@ -94,6 +104,11 @@ public class CreateList extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Controls when an option is selected in the overflow menu
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -116,6 +131,10 @@ public class CreateList extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param menuItem
+     */
     public void createList(MenuItem menuItem){
         // get data input in EditTexts and store it in Strings
         String name = nameEditText.getText().toString();
@@ -127,6 +146,8 @@ public class CreateList extends AppCompatActivity {
             // if any of the Strings are empty, display Please enter ... Toast
             Toast.makeText(this, "Please enter a name, store, and date!", Toast.LENGTH_LONG).show();
         } else {
+            // add shopping list to database
+            dbHandler.addShoppingList(name, store, date);
             // if none of the Strings are empty, display Shopping List Added Text Toast
             Toast.makeText(this, "Shopping List Added!", Toast.LENGTH_LONG).show();
         }

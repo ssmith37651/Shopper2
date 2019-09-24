@@ -12,11 +12,22 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
     //declare an intent
     Intent intent;
+
+    // declare a database Handler
+    DBHandler dbHandler;
+
+    // Declare a shoppinglist cursor adapter
+    ShoppingLists shoppingListsAdapter;
+
+    // declare a list view
+    ListView shopperListView;
 
     /**
      *This method initializes the Action Bar and the view
@@ -31,6 +42,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // initialize the database handler
+        dbHandler = new DBHandler(this, null);
+
+        // initialize the list view
+        shopperListView = (ListView) findViewById(R.id.shopperListView);
+
+        // initialize the Shopping Lists Cursor Adapter
+        shoppingListsAdapter = new ShoppingLists(this, dbHandler.getShoppingLists(), 0);
+
+        // set the Shopping Lists Cursor Adapter on ListView
+        shopperListView.setAdapter(shoppingListsAdapter);
+
+        // set OnItemClickListener to shopper ListView
+        shopperListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // launch the view list activity and sending it the id of
+                // the shopping list
+                intent = new Intent(MainActivity.this, ViewList.class);
+                intent.putExtra("_id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -76,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * When you click the floating action button it starts the
+     * Create List Activity
+     * @param view
+     */
     public void openCreateList(View view) {
         // initializing an intent for the Main activity, and starting it
         intent = new Intent(this, CreateList.class);
